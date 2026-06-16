@@ -1,10 +1,24 @@
-langchain
+# langchain
+# langchain-community
+# langchain-huggingface
+# langchain-groq
+# faiss-cpu
+# pypdf
+# streamlit
+# python-dotenv
+# sentence-transformers
+ 
+ langchain
 langchain-community
 langchain-huggingface
 langchain-groq
+langchain-text-splitters
+langchain-core
 faiss-cpu
-pypdf
+pymupdf
+pytesseract
+Pillow
 streamlit
 python-dotenv
 sentence-transformers
- 
+groq
