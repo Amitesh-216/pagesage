@@ -1,7 +1,4 @@
 
-
-
-
 import os
 import base64
 import tempfile
@@ -9,7 +6,7 @@ from io import BytesIO
 from dotenv import load_dotenv
  
 import streamlit as st
-import fitz  # PyMuPDF
+import fitz  
 from PIL import Image
 import pytesseract
  
@@ -110,18 +107,18 @@ def load_and_chunk(pdf_path: str):
             text=f"Processing page {page_num + 1} of {len(doc)}..."
         )
  
-        # ── Extract text from page ───────────────────────────────────────────
+       ──────────────────────────────────────────
         text = page.get_text().strip()
  
         if text and len(text) > 30:
-            # Good text-based page
+            
             all_documents.append(Document(
                 page_content=text,
                 metadata={"page": page_num, "type": "text"}
             ))
         else:
-            # Scanned page — render to image and OCR it
-            mat = fitz.Matrix(2.0, 2.0)  # 2x zoom for better OCR
+            
+            mat = fitz.Matrix(2.0, 2.0)  
             pix = page.get_pixmap(matrix=mat)
             img = Image.frombytes("RGB", [pix.width, pix.height], pix.samples)
  
@@ -132,7 +129,7 @@ def load_and_chunk(pdf_path: str):
                     metadata={"page": page_num, "type": "ocr"}
                 ))
  
-        # ── Extract embedded images/diagrams from page ───────────────────────
+       ────────────────────
         image_list = page.get_images(full=True)
         for img_index, img_info in enumerate(image_list):
             try:
@@ -141,7 +138,6 @@ def load_and_chunk(pdf_path: str):
                 img_bytes = base_image["image"]
                 pil_image = Image.open(BytesIO(img_bytes)).convert("RGB")
  
-                # Only process images large enough to be diagrams (skip icons/logos)
                 if pil_image.width > 100 and pil_image.height > 100:
                     description = describe_image_with_vision(pil_image, page_num)
                     all_documents.append(Document(
@@ -157,7 +153,7 @@ def load_and_chunk(pdf_path: str):
     if not all_documents:
         raise ValueError("No content could be extracted from this PDF.")
  
-    # Chunk the text documents (image descriptions are already concise)
+    
     splitter = RecursiveCharacterTextSplitter(chunk_size=800, chunk_overlap=80)
     chunks = splitter.split_documents(all_documents)
     chunks = [c for c in chunks if c.page_content.strip()]
